@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Prescription</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 20px;
+            margin-top: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            padding-inline: 2rem;
+        }
+
+        .header h1,
+
+        #name{
+            color: rgb(55, 55, 160);
+            font-size: 18px;
+        }
+        .header-section{
+            width: 40%;
+            line-height: 6px;
+            text-align: start;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .header-image{
+            display: flex;
+            align-items: center;
+        }
+        .patient-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px
+        }
+
+        .vitals,
+        .diagnosis,
+        .tests,
+        .advice {
+            display: flex;
+            gap: 4px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        .vitals h4,
+        .diagnosis h4,
+        .tests h4,
+        .advice h4 {
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        .vitals p,
+        .diagnosis p,
+        .tests p,
+        .advice p {
+            margin-top: 2.3px;
+        }
+
+        .medications table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .medications h4 {
+            text-align: center;
+            text-decoration: underline;
+            color: rgb(87, 87, 176);
+            ;
+        }
+
+        .medications thead {
+            background-color: rgb(174, 174, 204);
+        }
+
+        .medications th,
+        .medications td {
+            border: 1px solid rgb(87, 87, 176);
+            ;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .remarks {
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-section" style="width: 35%;">
+            <h4 id="name"><%-doctor.name%></h4>
+            <p>
+            <% for (let i = 0; i < doctor?.qualifications?.length; i++) { %>
+                <%= (doctor?.qualifications[i]) ? doctor?.qualifications[i]+', ' : '' %>
+            <% } %>
+        </p>
+            <p>Mob No: <%-doctor.mobile%></p>
+        </div>
+        <div class="header-image">
+            <img src="<%= hospital.logo %>" height="40px" width="45px" alt="Hospital Logo">
+        </div>
+        <div class="header-section">
+            <h4 id="name"><%-hospital.name%></h4>
+            <p>Address: <%-hospital.address%></p>
+            <p>Ph: <%-hospital.contactNumber%></p>
+            <p>Email: <%-hospital.email%></p>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <div class="patient-info">
+            <p><strong><%-patientName%></strong>, <span style="font-size: 11px;"><%-patientGender%>,
+                        <%-patientPhone%></span></p>
+            <p style="font-size: 11px;"><%-date%></p>
+        </div>
+        <div class="vitals">
+            <% if (vitals.pulseRate || vitals.SpO2 || vitals.bloodPressure || vitals.bodyWeight || vitals.bodyTemperature) { %>
+                <h4 style="color: rgb(87, 87, 176);white-space: nowrap;"><strong>VITALS - </strong></h4>
+              <% } %>
+            <p><% if (vitals.pulseRate) { %>
+                <strong>Pulse Rate:</strong> <%= vitals.pulseRate %> |
+              <% } %>
+              <% if (vitals.SpO2) { %>
+                <strong>Peripheral Oxygen Saturation:</strong> <%= vitals.SpO2 %> |
+              <% } %>
+              <% if (vitals.bloodPressure) { %>
+                <strong>Blood Pressure:</strong> <%= vitals.bloodPressure %> |
+              <% } %>
+              <% if (vitals.bodyWeight) { %>
+                <strong>Body Weight:</strong> <%= vitals.bodyWeight %> |
+              <% } %>
+              <% if (vitals.bodyTemperature) { %>
+                <strong>Temperature:</strong> <%= vitals.bodyTemperature %> |
+              <% } %></p>
+        </div>
+        <div class="diagnosis">
+            <h4 style="color: rgb(87, 87, 176);">DIAGNOSIS - </h4>
+            <p><strong><%=diagnosis?diagnosis:'-'%></strong></p>
+        </div>
+        <div class="tests">
+            <% if (testPrescribed&&testPrescribed.length>0) { %>
+                <h4 style="color: rgb(87, 87, 176);">TESTS PRESCRIBED - </h4>
+                <p>
+                    <% for (let i = 0; i < testPrescribed.length; i++) { %>
+                        <strong><%= (testPrescribed[i]) ? testPrescribed[i].testName+', ' : '-' %></strong>
+                    <% } %>
+                </p><% } %>
+        </div>
+        <div class="advice">
+            <% if (advice) { %>
+                <h4 style="color: rgb(87, 87, 176);">ADVICE - </h4>
+                <p><strong><%=advice%></strong></p>
+              <% } %>
+            
+        </div>
+        <div class="medications">
+            <h4>PRESCRIPTION</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Medication</th>
+                        <th style="text-align: center;">Frequency</th>
+                        <th style="text-align: center;">Period</th>
+                        <th style="text-align: center;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i = 0; i < medicines.length; i++) { %>
+                        <tr>
+                            <td><%= (medicines[i]) ? medicines[i].name : '-' %></td>
+                            <td><%= (medicines[i]) ? medicines[i].frequency : '-' %></td>
+                            <td><%= (medicines[i]) ? medicines[i].period : '-' %></td>
+                            <td><%= (medicines[i]) ? medicines[i].remarks : '-' %></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
